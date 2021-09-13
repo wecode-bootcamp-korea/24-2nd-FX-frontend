@@ -1,13 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import Nav from "./Component/Nav";
-import Login from "./Login/Login";
-import SignUp from "./SignUp/SignUp";
-import Main from "./Main/Main";
-import Drama from "./Drama/Drama";
-import Movie from "./Movie/Movie";
-import Footer from "./Component/Footer";
+import Login from "Pages/Login";
+import SignUp from "Pages/SignUp";
+import Main from "Pages/Main";
+import Genre from "Pages/Genre";
+import Nav from "Components/Nav";
+import Footer from "Components/Footer";
 
 class Routes extends React.Component {
   render() {
@@ -18,8 +17,7 @@ class Routes extends React.Component {
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/" component={Main} />
-          <Route exact path="/drama" component={Drama} />
-          <Route exact path="/movie" component={Movie} />
+          <Route exact path="/genre" component={Genre} />
         </Switch>
         <Footer />
       </Router>
