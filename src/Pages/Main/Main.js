@@ -1,7 +1,12 @@
+import Carousel from "Components/Carousel";
 import React from "react";
 
 const Main = () => {
-  return <div>main</div>;
+  return (
+    <>
+      <Carousel />
+    </>
+  );
 };
 
 export default Main;
