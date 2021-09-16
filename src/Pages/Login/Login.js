@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import LoginInput from "./LoginInput";
-import { FLIX_SIGNIN_URL, KAKAO_URL } from "../../config";
+import {
+  FLIX_SIGNIN_URL,
+  KAKAO_URL,
+  GOOGLE_URL,
+  GOOGLE_CLIENT_ID,
+} from "../../config";
 const { Kakao } = window;
 
 const Login = () => {
@@ -12,6 +17,7 @@ const Login = () => {
   const emailCheck = userEmail !== "" && !userEmail.includes("@");
   const pwCheck = userPw !== "" && userPw.length < 7;
   const check = userEmail.includes("@") && userPw.length > 7;
+  const googleLoginBtn = useRef();
 
   const LoginDatas = [
     {
@@ -32,8 +38,19 @@ const Login = () => {
     },
   ];
 
+  const fetchCallBack = data => {
+    if (data.token) {
+      localStorage.setItem("filx_token", data.token);
+      alert(`Flix의 재미를 느껴보세요!`);
+      history.push("/");
+    } else {
+      alert("로그인을 다시 해주세요.");
+    }
+  };
+
   useEffect(() => {
-    if (localStorage.flix_access_token) localStorage.clear();
+    localStorage.clear();
+    sessionStorage.clear();
   });
 
   const handleBtn = () => {
@@ -42,42 +59,30 @@ const Login = () => {
       body: JSON.stringify({
         email: userEmail,
         password: userPw,
-        signup_type: "flix",
+        signup_type: "FLIX",
       }),
     })
       .then(res => res.json())
-      .then(res => {
-        console.log(res);
-        if (res.flix_access_token) {
-          localStorage.setItem("flix_token", res.flix_access_token);
-          alert(`Flix의 재미를 느껴보세요!`);
-          history.push("/");
-        } else {
-          alert("이메일 및 비밀번호를 올바르게 기입해주세요.");
-        }
-      });
+      .then(res => fetchCallBack(res));
   };
 
   const handleKakao = () => {
     Kakao.Auth.login({
       success: function (authObj) {
+        localStorage.setItem("kakao_access_token", authObj.access_token);
+        localStorage.setItem("kakao_refresh_token", authObj.refresh_token);
+
         fetch(KAKAO_URL, {
           method: "POST",
           headers: {
             Authorization: authObj.access_token,
           },
+          body: {
+            signup_type: "KAKAO",
+          },
         })
           .then(res => res.json())
-          .then(res => {
-            console.log(res);
-            localStorage.setItem("kakao_access_token", authObj.access_token);
-            localStorage.setItem("kakao_refresh_token", authObj.refresh_token);
-            localStorage.setItem("flix_access_token", res.flix_access_token);
-            if (res.flix_access_token) {
-              alert("Flix의 재미를 느껴보세요!");
-              history.push("/");
-            } else alert("다시 카카오 로그인을 해주세요.");
-          });
+          .then(res => fetchCallBack(res));
       },
       fail: function (err) {
         alert(JSON.stringify(err));
@@ -85,11 +90,59 @@ const Login = () => {
     });
   };
 
+  //SDK 초기 설정 및 내 API초기화
+  const googleSDK = () => {
+    window.googleSDKLoaded = () => {
+      window.gapi.load("auth2", () => {
+        const googleAuth = window.gapi.auth2.init({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: "profile email",
+        });
+        //버튼 클릭시 사용자 정보 불러오기
+        googleAuth.attachClickHandler(
+          googleLoginBtn.current,
+          {},
+          googleUser => {
+            const google_access_token = googleUser.getAuthResponse().id_token;
+            const profile = googleUser.getBasicProfile();
+            const google_id = profile.getId();
+            const google_user_name = profile.getName();
+            localStorage.setItem("google_access_token", google_access_token);
+
+            fetch(GOOGLE_URL, {
+              method: "POST",
+              headers: {
+                Authorization: google_access_token,
+              },
+              body: JSON.stringify({
+                name: google_user_name,
+                google_id: google_id,
+                signup_type: "GOOGLE",
+              }),
+            })
+              .then(res => res.json())
+              .then(res => fetchCallBack(res));
+          },
+          error => {
+            alert(JSON.stringify(error, undefined, 2));
+          }
+        );
+      });
+    };
+    //구글 SDK 불러오기
+    (function (d, s, id) {
+      let js;
+      const fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://apis.google.com/js/platform.js?onload=googleSDKLoaded";
+      fjs.parentNode.insertBefore(js, fjs);
+    })(document, "script", "google-jssdk");
+  };
+
   return (
     <Whole>
-      <Logo>
-        <img src="./images/logo.png" alt="제발나와라" />
-      </Logo>
       <LoginContainer>
         <Title>로그인</Title>
         {LoginDatas.map((LoginData, idx) => {
@@ -109,9 +162,20 @@ const Login = () => {
           </a>
         </Help>
         <Footer>
-          <Btn backColor="transparent" onClick={handleKakao}>
+          <Btn backColor="transparent" onClick={handleKakao} padding="0">
             <img src="./images/kakaoBtn.png" alt="kakaoBtn" />
           </Btn>
+          <GoogleBtn
+            ref={googleLoginBtn}
+            onClick={googleSDK}
+            data-onsuccess="onSignIn"
+            marginBottom="10px"
+            backColor="orange"
+            textColor="black"
+          >
+            <i class="fab fa-google"></i>
+            <span>Google 로그인</span>
+          </GoogleBtn>
           <p>
             Flix 회원이 아니신가요?{" "}
             <White onClick={() => history.push("/signup")}>
@@ -132,15 +196,6 @@ const Whole = styled.div`
   width: 100vw;
   height: 100vh;
   background-image: url("https://images.unsplash.com/photo-1545630478-cf62cdd247d1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjR8fG1vdmllc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60");
-`;
-
-const Logo = styled.div`
-  position: absolute;
-  width: 120px;
-  height: 80px;
-  top: 50px;
-  left: 50px;
-  background-color: transparent;
 `;
 
 const LoginContainer = styled.div`
@@ -166,7 +221,8 @@ const Title = styled.div`
 const Btn = styled.button`
   width: 300px;
   height: 50px;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: ${props => props.marginBottom};
   border-radius: 5px;
   color: ${props => props.textColor};
   background-color: ${props => props.backColor};
@@ -177,9 +233,29 @@ const Btn = styled.button`
   }
 `;
 
+const GoogleBtn = styled(Btn.withComponent("div"))`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  :focus {
+    cursor: pointer;
+  }
+  i {
+    flex: 1;
+    padding-left: 10px;
+    text-align: center;
+  }
+  span {
+    flex: 9;
+    padding-right: 15px;
+    text-align: center;
+    font-size: 15px;
+  }
+`;
+
 const Help = styled.div`
   height: 20px;
-  margin: 10px 0 60px 0;
+  margin: 10px 0;
   color: #939393;
   text-decoration: none;
   text-align: right;
@@ -189,7 +265,7 @@ const Footer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 150px;
+  height: 200px;
   color: #939393;
   text-align: left;
   font-weight: 500;
