@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SignUpInput from "./SignUpInput";
-import { FLIX_SIGNUP_UR } from "../../config";
+import { FLIX_SIGNUP_URL } from "../../config";
 
 const SignUp = () => {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPw, setUserPw] = useState("");
-
   const history = useHistory();
   const nameCheck = userName !== "" && userName.length < 3;
   const emailCheck = userEmail !== "" && !userEmail.includes("@");
@@ -44,7 +43,7 @@ const SignUp = () => {
   ];
 
   const handleBtn = () => {
-    fetch(FLIX_SIGNUP_UR, {
+    fetch(FLIX_SIGNUP_URL, {
       method: "POST",
       body: JSON.stringify({
         name: userName,
