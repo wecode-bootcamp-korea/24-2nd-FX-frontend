@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SignUpInput from "./SignUpInput";
-import { FLIX_URL } from "../../config";
+import { FLIX_SIGNUP_UR } from "../../config";
 
 const SignUp = () => {
   const [userName, setUserName] = useState("");
@@ -44,7 +44,7 @@ const SignUp = () => {
   ];
 
   const handleBtn = () => {
-    fetch(`${FLIX_URL}/users/sign-up`, {
+    fetch(FLIX_SIGNUP_UR, {
       method: "POST",
       body: JSON.stringify({
         name: userName,
