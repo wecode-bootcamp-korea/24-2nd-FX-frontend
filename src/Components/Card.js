@@ -20,7 +20,8 @@ const ImgBox = styled.img`
   width: 200px;
   height: 280px;
   border-radius: 10px;
-  margin-left: 7px;
+  margin-left: 5px;
+  margin-right: 5px;
   cursor: pointer;
 
   &:hover {
