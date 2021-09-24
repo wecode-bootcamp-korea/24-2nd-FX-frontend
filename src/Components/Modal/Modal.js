@@ -1,7 +1,25 @@
 import styled from "styled-components";
+import React, { useEffect, useState } from "react";
+import { DETAIL_URL } from "../../config.js";
 import ModalPortal from "./Portal";
 
 const Modal = ({ onClose, modalOn }) => {
+  const [detailData, setDetailData] = useState([]);
+
+  const handleFetch = (API, callback) => {
+    fetch(API)
+      .then(res => res.json())
+      .then(data => callback(data));
+  };
+
+  const updateDetailData = data => {
+    setDetailData(data.Result);
+  };
+
+  useEffect(() => {
+    handleFetch(`${DETAIL_URL}`, updateDetailData);
+  }, []);
+
   return (
     <ModalPortal>
       {modalOn && (
@@ -31,6 +49,11 @@ const Modal = ({ onClose, modalOn }) => {
               <SeriesInfo>
                 <H3>1</H3>
                 <H3>Chapter 2</H3>
+                <SeriesDes>
+                  보름달이 뜨면 손님으로 북적이는 호텔. 그곳의 사장 장만월.
+                  호텔에 몰래 들어와 물건을 훔치려 한 손님을 큰맘 먹고
+                  살려주기로 한다. 그의 아들을 데려오는 조건으로.
+                </SeriesDes>
                 <H3>122분</H3>
               </SeriesInfo>
             </ContentSeries>
@@ -56,7 +79,9 @@ const Background = styled.div`
 `;
 
 const Content = styled.div`
+  margin-top: 70px;
   height: 100%;
+  width: 950px;
   position: relative;
   background: #141414;
   overflow: scroll;
@@ -67,7 +92,7 @@ const ContentInfo = styled.div`
 `;
 
 const ContentImg = styled.img`
-  width: 850px;
+  width: 950px;
 `;
 
 const ContentDetail = styled.div`
@@ -99,6 +124,11 @@ const H3 = styled.p`
   font-weight: bold;
 `;
 
+const SeriesDes = styled.div`
+  width: 500px;
+  text-align: left;
+`;
+
 const ContentDetailLeft = styled.div`
   width: 480px;
   color: white;
@@ -119,13 +149,9 @@ const CloseBtn = styled.button`
   right: 0;
   z-index: 999;
   color: #141414;
-  font-size: 18px;
+  font-size: 30px;
   font-weight: bold;
-
-  &:hover {
-    transform: scale(1.15);
-    transition: transform 0.1s;
-  }
+  cursor: pointer;
 `;
 
 const ContentSeries = styled.div`

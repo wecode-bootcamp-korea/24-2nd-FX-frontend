@@ -1,56 +1,64 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
+import { MAIN_URL } from "../config.js";
 import Card from "./Card";
 import ModalPortal from "../Components/Modal/Portal";
 import Modal from "./Modal/Modal";
-import { MainAPI } from "../config.js";
 
-const Carousel = () => {
-  const [curXAxis, setCurXAxis] = useState(0);
+const Carousel = props => {
+  const [curXoffset, setCurXoffset] = useState(0);
+  const [visibleCount, setvisibleCount] = useState(
+    firstTotalCount - viewingCount
+  );
+  const curCount = firstTotalCount - visibleCount;
+  const passedCount = curCount - viewingCount;
+  const maxXOffset = 0;
   const [hiddenStatus, setHiddenStatus] = useState(false);
-  const [cardsData, setCardsData] = useState([]);
+
   const [modalOn, setModalOn] = useState(false);
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(paramsString);
+  // useEffect(() => {
+  // const searchParams = new URLSearchParams(paramsString);
 
-    const updateCardsData = data => {
-      setCardsData(data.Result);
-    };
+  // const setParams = (param, value) => {
+  //   searchParams.set(param, value);
+  //   return searchParams.toString();
+  // };
 
-    const setParams = (param, value) => {
-      searchParams.set(param, value);
-      return searchParams.toString();
-    };
+  // const appendParams = (param, value) => {
+  //   searchParams.append(param, value);
+  //   return searchParams.toString();
+  // };
 
-    const appendParams = (param, value) => {
-      searchParams.append(param, value);
-      return searchParams.toString();
-    };
+  // const deleteParams = (param, value) => {
+  //   searchParams.delete(param, value);
+  //   return searchParams.toString();
+  // };
 
-    const deleteParams = (param, value) => {
-      searchParams.delete(param, value);
-      return searchParams.toString();
-    };
-
-    handleFetch(`${MainAPI}/list?${paramsString}`, updateCardsData);
-  }, []);
-
-  const handleFetch = (API, callback) => {
-    fetch(API)
-      .then(res => res.json())
-      .then(data => callback(data));
-  };
+  // console.log(`curXoffset : ${curXoffset}`);
+  // console.log(`visibleCount : ${visibleCount}`);
+  // console.log(`curCount : ${curCount}`);
+  // console.log(`passedCount : ${passedCount}`);
 
   const handleLeftArrow = () => {
-    if (curXAxis < 0) {
-      setCurXAxis(curXAxis + imgWidth * 8);
+    if (curXoffset < maxXOffset) {
+      if (passedCount >= viewingCount) {
+        setCurXoffset(curXoffset + cardWidth * viewingCount);
+        setvisibleCount(visibleCount + viewingCount);
+      } else if (passedCount < viewingCount) {
+        setCurXoffset(curXoffset + cardWidth * passedCount);
+        setvisibleCount(visibleCount + passedCount);
+      }
     }
   };
 
   const handleRightArrow = () => {
-    if (curXAxis > (totalCount - 8) * -imgWidth) {
-      setCurXAxis(curXAxis - imgWidth * 8);
+    if (visibleCount >= viewingCount) {
+      setCurXoffset(curXoffset - cardWidth * viewingCount);
+      setvisibleCount(visibleCount - viewingCount);
+    } else if (visibleCount < viewingCount) {
+      setCurXoffset(curXoffset - cardWidth * visibleCount);
+      setvisibleCount(0);
     }
   };
 
@@ -81,8 +89,8 @@ const Carousel = () => {
         </HeaderBox>
         <Slider>
           <LeftArrow onClick={handleLeftArrow}>&#60;</LeftArrow>
-          <CardWrapper curXAxis={curXAxis}>
-            {cardsData.map(card => {
+          <CardWrapper curXoffset={curXoffset}>
+            {props.cardsData.map(card => {
               return (
                 <Card
                   id={card.id}
@@ -105,11 +113,9 @@ const Carousel = () => {
 
 export default Carousel;
 
-const imgWidth = 180;
-const totalCount = 21;
-
-export const paramsString =
-  "limit=21&category=movie&category=movie&genre=Action&genre=Adventure";
+const cardWidth = 210;
+const firstTotalCount = 26;
+const viewingCount = 8;
 
 const fadein = keyframes`
   from { 
@@ -134,8 +140,9 @@ const Slider = styled.div`
 const CardWrapper = styled.ul`
   display: flex;
   z-index: 0;
-  margin-left: 50px;
-  transform: translateX(${props => props.curXAxis}px);
+  margin-left: 25px;
+  margin-right: 25px;
+  transform: translateX(${props => props.curXoffset}px);
   transition: all 0.7s ease-in-out;
 `;
 const HeaderBox = styled.div`
