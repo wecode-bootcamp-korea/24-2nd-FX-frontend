@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MAIN_URL } from "../config.js";
 import Card from "./Card";
 import ModalPortal from "../Components/Modal/Portal";
 import Modal from "./Modal/Modal";
@@ -10,12 +9,12 @@ const Carousel = props => {
   const [visibleCount, setvisibleCount] = useState(
     firstTotalCount - viewingCount
   );
+  const [hiddenStatus, setHiddenStatus] = useState(false);
+  const [modalOn, setModalOn] = useState(false);
+  const [cardsData, setCardsData] = useState([]);
   const curCount = firstTotalCount - visibleCount;
   const passedCount = curCount - viewingCount;
   const maxXOffset = 0;
-  const [hiddenStatus, setHiddenStatus] = useState(false);
-
-  const [modalOn, setModalOn] = useState(false);
 
   // useEffect(() => {
   // const searchParams = new URLSearchParams(paramsString);
@@ -34,11 +33,6 @@ const Carousel = props => {
   //   searchParams.delete(param, value);
   //   return searchParams.toString();
   // };
-
-  // console.log(`curXoffset : ${curXoffset}`);
-  // console.log(`visibleCount : ${visibleCount}`);
-  // console.log(`curCount : ${curCount}`);
-  // console.log(`passedCount : ${passedCount}`);
 
   const handleLeftArrow = () => {
     if (curXoffset < maxXOffset) {
@@ -74,6 +68,20 @@ const Carousel = props => {
     setModalOn(!modalOn);
   };
 
+  const handleFetch = (API, callback) => {
+    fetch(API)
+      .then(res => res.json())
+      .then(data => callback(data));
+  };
+
+  const updateCardsData = data => {
+    setCardsData(data.Result);
+  };
+
+  useEffect(() => {
+    handleFetch(`${props.url}`, updateCardsData);
+  }, [props.url]);
+
   return (
     <>
       <Container>
@@ -81,16 +89,15 @@ const Carousel = props => {
           onMouseEnter={showHiddenHeader}
           onMouseLeave={hideHiddenHeader}
         >
-          <Header>지금 뜨는 콘텐츠 </Header>
+          <Header>{props.title} </Header>
           <HiddenHeader hiddenStatus={hiddenStatus}>
             모두 보기 &#62;
           </HiddenHeader>
-          <button onClick={handleModal}>모달열기</button>
         </HeaderBox>
         <Slider>
           <LeftArrow onClick={handleLeftArrow}>&#60;</LeftArrow>
           <CardWrapper curXoffset={curXoffset}>
-            {props.cardsData.map(card => {
+            {cardsData.map(card => {
               return (
                 <Card
                   id={card.id}
