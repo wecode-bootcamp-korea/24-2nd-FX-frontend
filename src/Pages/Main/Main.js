@@ -1,12 +1,18 @@
 import Carousel from "Components/Carousel";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Modal from "../../Components/Modal/Modal";
 import { MAIN_URL } from "../../config.js";
+import SLIDE_DATA from "./slideData.js";
 
 const Main = () => {
   const [isImgDisplay, setIsImgDisplay] = useState(false);
   const [movieList, setMovieList] = useState([]);
+
+  const handleFetch = (API, callback) => {
+    fetch(API)
+      .then(res => res.json())
+      .then(data => callback(data));
+  };
 
   const onMouseEnterHandeler = () =>
     setTimeout(() => {
@@ -30,22 +36,6 @@ const Main = () => {
       .then(data => setMovieList(data.Result[0]));
   }, []);
 
-  const [cardsData, setCardsData] = useState([]);
-
-  const handleFetch = (API, callback) => {
-    fetch(API)
-      .then(res => res.json())
-      .then(data => callback(data));
-  };
-
-  const updateCardsData = data => {
-    setCardsData(data.Result);
-  };
-
-  useEffect(() => {
-    handleFetch(`${MAIN_URL}${paramsString}`, updateCardsData);
-  }, []);
-  console.log(movieList);
   return (
     <>
       <MainImgLayout onMouseEnter={onMouseEnterHandeler}>
@@ -81,17 +71,14 @@ const Main = () => {
           </PlayButtonLayout>
         </MainInfoLayout>
       </MainImgLayout>
-      <Carousel cardsData={cardsData} />
-      <Carousel cardsData={cardsData} />
-      <Carousel cardsData={cardsData} />
+      {SLIDE_DATA.map(slide => (
+        <Carousel key={slide.id} title={slide.title} url={slide.url} />
+      ))}
     </>
   );
 };
 
 const MainImgLayout = styled.div``;
-
-export const paramsString =
-  "limit=26&nation=S.Korea&category=movie&category=movie&genre=Action&genre=Adventure";
 
 const MainInfoLayout = styled.div`
   display: flex;
