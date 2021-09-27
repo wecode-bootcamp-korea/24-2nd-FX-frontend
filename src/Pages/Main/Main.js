@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { MAIN_URL } from "../../config.js";
 import SLIDE_DATA from "./slideData.js";
+import Nav from "Components/Nav";
 
 const Main = () => {
   const [isImgDisplay, setIsImgDisplay] = useState(false);
   const [movieList, setMovieList] = useState([]);
+  const [cardsData, setCardsData] = useState([]);
 
   const handleFetch = (API, callback) => {
     fetch(API)
@@ -21,6 +23,10 @@ const Main = () => {
 
   const onMouseLeaveHandeler = () => setIsImgDisplay(false);
 
+  const updateGenreListData = data => {
+    setMovieList(data.Result[0]);
+  };
+
   useEffect(() => {
     const timer = onMouseEnterHandeler();
     return () => {
@@ -29,15 +35,14 @@ const Main = () => {
   }, [isImgDisplay]);
 
   useEffect(() => {
-    fetch(
-      "http://211.110.167.131:8000/content/list?order-by=-hot&limit=20&nation=USA"
-    )
-      .then(response => response.json())
-      .then(data => setMovieList(data.Result[0]));
-  }, []);
+    handleFetch(`${MAIN_URL}${paramsString}`, updateGenreListData);
+  }, [movieList]);
+
+  const paramsString = `limit=26&order-by=-hot&category=drama&genre=Action&genre=Adventure`;
 
   return (
     <>
+      <Nav card={cardsData} />
       <MainImgLayout onMouseEnter={onMouseEnterHandeler}>
         <MainImg src={movieList.thumb_nail} isImgDisplay={isImgDisplay} />
         <div

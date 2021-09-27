@@ -5,3 +5,5 @@ export const FLIX_SIGNUP_URL = `http://${LOGIN_IP}:8000/users/sign-in`;
 export const KAKAO_URL = `http://${LOGIN_IP}:8000/users/kakao-login`;
 export const MAIN_URL = `http://${MAIN_IP}:8000/content/list?`;
 export const DETAIL_URL = `http://${MAIN_IP}:8000/content`;
+export const GENRE_MAIN_URL = `http://${MAIN_IP}:8000/content/list?order-by=-hot&category=`;
+export const GENRE_LIST_URL = `http://${MAIN_IP}:8000/content/list?limit=2&category=`;
