@@ -65,9 +65,6 @@ const SignUp = () => {
 
   return (
     <Whole>
-      <Logo>
-        <img src="./images/logo.png" alt="logo" />
-      </Logo>
       <SignUpContainer>
         <Title>회원가입</Title>
         {SignUpDatas.map((SignUpData, idx) => {
@@ -101,18 +98,6 @@ const Whole = styled.div`
   width: 100vw;
   height: 100vh;
   background-image: url("https://images.unsplash.com/photo-1545630478-cf62cdd247d1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjR8fG1vdmllc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60");
-`;
-
-const Logo = styled.div`
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  background-color: transparent;
-  width: 170px;
-  height: 80px;
-  background-image: image("../../../public/images/logo.png");
-  background-position: center;
-  background-size: cover;
 `;
 
 const SignUpContainer = styled.div`
