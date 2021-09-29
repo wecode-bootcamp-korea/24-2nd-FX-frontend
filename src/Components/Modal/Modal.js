@@ -2,9 +2,11 @@ import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import { DETAIL_URL } from "../../config.js";
 import ModalPortal from "./Portal";
+import Series from "./Series.js";
 
 const Modal = ({ onClose, modalOn }) => {
   const [detailData, setDetailData] = useState([]);
+  const { id, name, description, nation, detail } = detailData;
 
   const handleFetch = (API, callback) => {
     fetch(API)
@@ -17,7 +19,7 @@ const Modal = ({ onClose, modalOn }) => {
   };
 
   useEffect(() => {
-    handleFetch(`${DETAIL_URL}`, updateDetailData);
+    handleFetch(`${DETAIL_URL}/12`, updateDetailData);
   }, []);
 
   return (
@@ -26,37 +28,23 @@ const Modal = ({ onClose, modalOn }) => {
         <Background>
           <Content>
             <ContentInfo>
-              <CloseBtn onClick={onClose}>X</CloseBtn>
+              <CloseBtn onClick={onClose}>x</CloseBtn>
               <ContentImg src="/images/contentsample.PNG" alt="img" />
-              <H1>호텔델루나</H1>
+              <Title>{name}</Title>
               <ContentDetail>
                 <ContentDetailLeft>
-                  <p>
-                    서울 도심에 수상한 호텔이 있다. 천년 영업에 숙박한 사람이
-                    없다. 왜? 산 사람은 안 받으니까. 귀신만 묵는 그곳에 인간
-                    지배인이 왔다. 알고 보면 심약한 이 남자, 고객 응대 잘
-                    해낼까? 외모와 달리 괴팍한 사장은 어찌 감당하누.
-                  </p>
+                  <H4>{description}</H4>
                 </ContentDetailLeft>
                 <ContentDetailRight>
-                  <p>장르 : 드라마</p>
-                  <p>국가 : 한국</p>
+                  <H4>국가 : {nation}</H4>
                 </ContentDetailRight>
               </ContentDetail>
             </ContentInfo>
-            <ContentSeries>
-              <H2>회차</H2>
-              <SeriesInfo>
-                <H3>1</H3>
-                <H3>Chapter 2</H3>
-                <SeriesDes>
-                  보름달이 뜨면 손님으로 북적이는 호텔. 그곳의 사장 장만월.
-                  호텔에 몰래 들어와 물건을 훔치려 한 손님을 큰맘 먹고
-                  살려주기로 한다. 그의 아들을 데려오는 조건으로.
-                </SeriesDes>
-                <H3>122분</H3>
-              </SeriesInfo>
-            </ContentSeries>
+            <H2>회차</H2>
+
+            {detail.map(data => (
+              <Series key={id} data={data} />
+            ))}
           </Content>
         </Background>
       )}
@@ -99,47 +87,39 @@ const ContentImg = styled.img`
 
 const ContentDetail = styled.div`
   display: flex;
-  padding: 0 0 50px 50px;
+  justify-content: space-between;
+  padding: 0 50px 50px 0;
 `;
 
-const H1 = styled.p`
+const Text = styled.p`
   padding-left: 50px;
   margin: 20px 0 20px 0;
   color: white;
   text-align: left;
   font-weight: bold;
-  font-size: 42px;
 `;
 
-const H2 = styled.p`
-  margin: 10px 0;
-  color: white;
-  text-align: left;
-  font-size: 28px;
-  font-weight: bold;
+const Title = styled(Text)`
+  font-size: 45px;
 `;
 
-const H3 = styled.p`
-  color: white;
-  text-align: left;
-  font-size: 18px;
-  font-weight: bold;
+const H2 = styled(Text)`
+  font-size: 30px;
 `;
 
-const SeriesDes = styled.div`
-  width: 500px;
-  text-align: left;
+const H4 = styled(Text)`
+  font-size: 20px;
+  font-weight: revert;
 `;
 
 const ContentDetailLeft = styled.div`
-  width: 480px;
+  width: 600px;
   color: white;
   text-align: left;
   font-size: 18px;
 `;
 
 const ContentDetailRight = styled.div`
-  margin-left: 50px;
   color: white;
   text-align: left;
   font-size: 18px;
@@ -154,15 +134,4 @@ const CloseBtn = styled.button`
   font-size: 30px;
   font-weight: bold;
   cursor: pointer;
-`;
-
-const ContentSeries = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0 0 500px 50px;
-`;
-
-const SeriesInfo = styled.div`
-  display: flex;
-  color: white;
 `;

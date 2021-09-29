@@ -1,18 +1,12 @@
 import Carousel from "Components/Carousel";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { MAIN_URL } from "../../config.js";
 import SLIDE_DATA from "./slideData.js";
+import { MAIN_URL } from "config.js";
 
 const Main = () => {
   const [isImgDisplay, setIsImgDisplay] = useState(false);
   const [movieList, setMovieList] = useState([]);
-
-  const handleFetch = (API, callback) => {
-    fetch(API)
-      .then(res => res.json())
-      .then(data => callback(data));
-  };
 
   const onMouseEnterHandeler = () =>
     setTimeout(() => {
@@ -29,9 +23,7 @@ const Main = () => {
   }, [isImgDisplay]);
 
   useEffect(() => {
-    fetch(
-      "http://211.110.167.131:8000/content/list?order-by=-hot&limit=20&nation=USA"
-    )
+    fetch(`${MAIN_URL}order-by=-hot&limit=20&nation=USA`)
       .then(response => response.json())
       .then(data => setMovieList(data.Result[0]));
   }, []);
