@@ -1,14 +1,5 @@
-export const Query = searchParams => ({
-  set: (param, value) => {
-    searchParams.set(param, value);
-    return searchParams.toString();
-  },
-  append: (param, value) => {
-    searchParams.append(param, value);
-    return searchParams.toString();
-  },
-  delete: (param, value) => {
-    searchParams.delete(param, value);
-    return searchParams.toString();
-  },
-});
+export const handleFetch = (API, callback) => {
+  fetch(API)
+    .then(res => res.json())
+    .then(data => callback(data));
+};

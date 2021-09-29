@@ -9,6 +9,7 @@ const Card = props => {
         src={props.img}
         alt="imgbox"
         onClick={props.onClick}
+        onMouseEnter={props.onMouseEnter}
       />
     </li>
   );

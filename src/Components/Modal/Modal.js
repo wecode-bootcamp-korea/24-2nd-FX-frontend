@@ -1,53 +1,54 @@
-import styled from "styled-components";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { DETAIL_URL } from "../../config.js";
 import ModalPortal from "./Portal";
 import Series from "./Series.js";
+import Streaming from "Components/Streaming.js";
+import { handleFetch } from "../../utils/index";
 
-const Modal = ({ onClose, modalOn }) => {
-  const [detailData, setDetailData] = useState([]);
-  const { id, name, description, nation, detail } = detailData;
-
-  const handleFetch = (API, callback) => {
-    fetch(API)
-      .then(res => res.json())
-      .then(data => callback(data));
-  };
-
-  const updateDetailData = data => {
-    setDetailData(data.Result);
-  };
+const Modal = ({ onClose, currentId }) => {
+  const [detailData, setDetailData] = useState({});
 
   useEffect(() => {
-    handleFetch(`${DETAIL_URL}/12`, updateDetailData);
-  }, []);
+    const updateModalVideo = data => {
+      setDetailData(data.Result);
+    };
+
+    handleFetch(`${DETAIL_URL}${currentId}`, updateModalVideo);
+  }, [currentId]);
+
+  const movieTitle = detailData.name;
+  const movieId = detailData.id;
+  const movieDes = detailData.description;
+  const movieNation = detailData.nation;
+  const movieDetail = detailData.detail ?? [];
+  const thumbnailVideoId = detailData.detail?.[0].detail_id;
 
   return (
     <ModalPortal>
-      {modalOn && (
-        <Background>
-          <Content>
-            <ContentInfo>
-              <CloseBtn onClick={onClose}>x</CloseBtn>
-              <ContentImg src="/images/contentsample.PNG" alt="img" />
-              <Title>{name}</Title>
-              <ContentDetail>
-                <ContentDetailLeft>
-                  <H4>{description}</H4>
-                </ContentDetailLeft>
-                <ContentDetailRight>
-                  <H4>국가 : {nation}</H4>
-                </ContentDetailRight>
-              </ContentDetail>
-            </ContentInfo>
-            <H2>회차</H2>
-
-            {detail.map(data => (
-              <Series key={id} data={data} />
-            ))}
-          </Content>
-        </Background>
-      )}
+      <Background>
+        <Content>
+          <ContentInfo>
+            <CloseBtn onClick={onClose}>X</CloseBtn>
+            <ContentVideo>
+              {thumbnailVideoId && <Streaming streamId={thumbnailVideoId} />}
+            </ContentVideo>
+            <Title>{movieTitle}</Title>
+            <ContentDetail>
+              <ContentDetailLeft>
+                <H4>{movieDes}</H4>
+              </ContentDetailLeft>
+              <ContentDetailRight>
+                <H4>국가 : {movieNation}</H4>
+              </ContentDetailRight>
+            </ContentDetail>
+          </ContentInfo>
+          <H2>회차</H2>
+          {movieDetail.map(data => (
+            <Series key={movieId} data={data} />
+          ))}
+        </Content>
+      </Background>
     </ModalPortal>
   );
 };
@@ -81,7 +82,7 @@ const ContentInfo = styled.div`
   color: white;
 `;
 
-const ContentImg = styled.img`
+const ContentVideo = styled.div`
   width: 950px;
 `;
 

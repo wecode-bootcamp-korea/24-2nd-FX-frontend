@@ -35,7 +35,7 @@ const Nav = () => {
 
 const NavNormalLayout = styled.div`
   top: 0;
-  position: ${props => (props.isScroll ? "fixed" : "relative")};
+  position: ${props => (props.isScroll ? "sticky" : "relative")};
   width: 100%;
   background: ${props => (props.isScroll ? "rgb(15, 15, 15)" : "transparent")};
   z-index: 999;
