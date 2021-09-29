@@ -57,6 +57,7 @@ const Footer = () => {
 
 const FooterBox = styled.div`
   background-color: black;
+  margin-top: -20px;
 `;
 
 const FooterLayout = styled.div`

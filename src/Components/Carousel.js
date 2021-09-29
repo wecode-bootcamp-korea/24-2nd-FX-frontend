@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
+import useReactRouter from "use-react-router";
 import Card from "./Card";
 import ModalPortal from "../Components/Modal/Portal";
 import Modal from "./Modal/Modal";
+import { handleFetch } from "../utils/index";
 
 const Carousel = props => {
+  const { match, location } = useReactRouter();
   const [curXoffset, setCurXoffset] = useState(0);
   const [cardsData, setCardsData] = useState([]);
   const firstTotalCount = 10;
+  const [currentId, setCurrnetId] = useState(1);
   const [visibleCount, setvisibleCount] = useState(
     firstTotalCount - viewingCount
   );
@@ -52,19 +56,23 @@ const Carousel = props => {
     setModalOn(!modalOn);
   };
 
-  const handleFetch = (API, callback) => {
-    fetch(API)
-      .then(res => res.json())
-      .then(data => callback(data));
-  };
-
   const updateCardsData = data => {
     setCardsData(data.Result);
   };
 
   useEffect(() => {
-    handleFetch(`${props.url}`, updateCardsData);
-  }, [props.url]);
+    if (
+      match.params.genreCategory === "drama" ||
+      match.params.genreCategory === "movie"
+    ) {
+      handleFetch(
+        `${props.url}&category=${match.params.genreCategory}`,
+        updateCardsData
+      );
+    } else {
+      handleFetch(`${props.url}`, updateCardsData);
+    }
+  }, [match.params.genreCategory]);
 
   return (
     <>
@@ -86,6 +94,8 @@ const Carousel = props => {
             {cardsData.map(card => {
               return (
                 <Card
+                  key={card.id}
+                  onMouseEnter={() => setCurrnetId(card.id)}
                   id={card.id}
                   img={card.thumb_nail}
                   onClick={handleModal}
@@ -98,7 +108,7 @@ const Carousel = props => {
           )}
         </Slider>
         <ModalPortal>
-          <Modal onClose={handleModal} modalOn={modalOn} />
+          {modalOn && <Modal onClose={handleModal} currentId={currentId} />}
         </ModalPortal>
       </Container>
     </>

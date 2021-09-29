@@ -1,8 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import useReactRouter from "use-react-router";
 
 const NavGenre = () => {
+  const { history } = useReactRouter();
+
+  const changePage = path => {
+    history.push(path);
+  };
+
   return (
     <List>
       <Logo>
@@ -11,16 +17,18 @@ const NavGenre = () => {
         </LogoLink>
       </Logo>
       <GenreList>
-        <Link>홈</Link>
+        <Listcusor onClick={() => changePage("/")}>홈</Listcusor>
       </GenreList>
       <GenreList>
-        <Link>TV 프로그램</Link>
+        <Listcusor onClick={() => changePage("/genre/drama")}>
+          TV 프로그램
+        </Listcusor>
       </GenreList>
       <GenreList>
-        <Link>영화</Link>
+        <Listcusor onClick={() => changePage("/genre/movie")}>영화</Listcusor>
       </GenreList>
       <GenreList>
-        <Link>내가 찜한 콘텐츠</Link>
+        <Listcusor onClick={() => changePage("/")}>내가 찜한 콘텐츠</Listcusor>
       </GenreList>
     </List>
   );
@@ -48,6 +56,10 @@ const GenreList = styled.li`
   color: #b3b3b3;
   font-size: 14px;
   margin: 5px 0 0 60px;
+`;
+
+const Listcusor = styled.div`
+  cursor: pointer;
 `;
 
 export default NavGenre;

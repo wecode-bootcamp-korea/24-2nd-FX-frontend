@@ -1,10 +1,14 @@
-import React from "react";
+import { useEffect, useRef } from "react";
+import styled from "styled-components";
+import { STREAM_URL } from "../config.js";
 
-const Streaming = () => {
+const Streaming = props => {
+  const videoRef = useRef();
+
   useEffect(() => {
-    const video = document.getElementsByTagName("video")[0];
-    const chunks = 100;
-    const file = "http://211.110.167.131:8000/content/streaming/82";
+    const video = videoRef.current;
+    const chunks = 30;
+    const streamingFile = `${STREAM_URL}${props.streamId}`;
     const mediaSource = new MediaSource();
 
     mediaSource.addEventListener("sourceopen", e => {
@@ -31,36 +35,36 @@ const Streaming = () => {
     video.src = window.URL.createObjectURL(mediaSource);
 
     let i = 0;
-    const loadChunk = i => {
-      const xhr = new XMLHttpRequest();
+
+    const loadChunk = async i => {
       const start = 0;
       const length = 30000000;
 
       const chunkSize = Math.ceil(length / chunks);
-      xhr.open("GET", file, true);
+      const startByte = parseInt(start + chunkSize * i);
 
-      xhr.responseType = "arraybuffer";
-      let startByte = parseInt(start + chunkSize * i);
-      xhr.setRequestHeader(
-        "Range",
-        "bytes=" + start + chunkSize * i + "-" + (startByte + chunkSize - 1)
-      );
+      const range =
+        "bytes=" + start + chunkSize * i + "-" + (startByte + chunkSize - 1);
 
-      console.log(
-        "bytes=" + start + chunkSize * i + "-" + (startByte + chunkSize - 1)
-      );
+      const res = await fetch(streamingFile, {
+        headers: {
+          Range: range,
+        },
+      }).then(res => res.arrayBuffer());
 
-      xhr.addEventListener("load", function (e) {
-        mediaSource.sourceBuffers[0].appendBuffer(new Uint8Array(xhr.response));
-      });
-      xhr.send();
+      mediaSource.sourceBuffers[0].appendBuffer(new Uint8Array(res));
     };
   }, []);
+
   return (
     <>
-      <video></video>
+      <VideoStream ref={videoRef} autoPlay muted width="100%" controls />
     </>
   );
 };
+
+const VideoStream = styled.video`
+  margin-top: -70px;
+`;
 
 export default Streaming;
