@@ -4,6 +4,7 @@ import Login from "Pages/Login";
 import SignUp from "Pages/SignUp";
 import Main from "Pages/Main";
 import Genre from "Pages/Genre";
+import WishList from "Pages/WishList";
 import Nav from "Components/Nav";
 import Footer from "Components/Footer";
 
@@ -21,6 +22,8 @@ class Routes extends React.Component {
             path="/genre/:genreCategory"
             component={props => <Genre {...props} />}
           />
+          <Route exact path="/genre" component={Genre} />
+          <Route exact path="/wishlist" component={WishList} />
         </Switch>
         <Footer />
       </Router>
