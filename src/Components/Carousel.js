@@ -6,33 +6,17 @@ import Modal from "./Modal/Modal";
 
 const Carousel = props => {
   const [curXoffset, setCurXoffset] = useState(0);
+  const [cardsData, setCardsData] = useState([]);
+  const firstTotalCount = 10;
   const [visibleCount, setvisibleCount] = useState(
     firstTotalCount - viewingCount
   );
   const [hiddenStatus, setHiddenStatus] = useState(false);
   const [modalOn, setModalOn] = useState(false);
-  const [cardsData, setCardsData] = useState([]);
+
   const curCount = firstTotalCount - visibleCount;
   const passedCount = curCount - viewingCount;
   const maxXOffset = 0;
-
-  // useEffect(() => {
-  // const searchParams = new URLSearchParams(paramsString);
-
-  // const setParams = (param, value) => {
-  //   searchParams.set(param, value);
-  //   return searchParams.toString();
-  // };
-
-  // const appendParams = (param, value) => {
-  //   searchParams.append(param, value);
-  //   return searchParams.toString();
-  // };
-
-  // const deleteParams = (param, value) => {
-  //   searchParams.delete(param, value);
-  //   return searchParams.toString();
-  // };
 
   const handleLeftArrow = () => {
     if (curXoffset < maxXOffset) {
@@ -95,7 +79,9 @@ const Carousel = props => {
           </HiddenHeader>
         </HeaderBox>
         <Slider>
-          <LeftArrow onClick={handleLeftArrow}>&#60;</LeftArrow>
+          {cardsData.length > viewingCount && (
+            <LeftArrow onClick={handleLeftArrow}>&#60;</LeftArrow>
+          )}
           <CardWrapper curXoffset={curXoffset}>
             {cardsData.map(card => {
               return (
@@ -107,9 +93,10 @@ const Carousel = props => {
               );
             })}
           </CardWrapper>
-          <RightArrow onClick={handleRightArrow}>&#62;</RightArrow>
+          {cardsData.length > viewingCount && (
+            <RightArrow onClick={handleRightArrow}>&#62;</RightArrow>
+          )}
         </Slider>
-
         <ModalPortal>
           <Modal onClose={handleModal} modalOn={modalOn} />
         </ModalPortal>
@@ -121,7 +108,7 @@ const Carousel = props => {
 export default Carousel;
 
 const cardWidth = 210;
-const firstTotalCount = 26;
+
 const viewingCount = 8;
 
 const fadein = keyframes`
