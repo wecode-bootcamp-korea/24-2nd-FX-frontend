@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { DETAIL_URL } from "../../config.js";
+import { DETAIL_URL, WISH_URL, WISH_TOKEN } from "../../config.js";
 import ModalPortal from "./Portal";
 import Series from "./Series.js";
 import Streaming from "Components/Streaming.js";
@@ -8,6 +8,7 @@ import { handleFetch } from "../../utils/index";
 
 const Modal = ({ onClose, currentId }) => {
   const [detailData, setDetailData] = useState({});
+  const [isWishAdd, setIsWishAdd] = useState(false);
 
   useEffect(() => {
     const updateModalVideo = data => {
@@ -24,6 +25,31 @@ const Modal = ({ onClose, currentId }) => {
   const movieDetail = detailData.detail ?? [];
   const thumbnailVideoId = detailData.detail?.[0].detail_id;
 
+  const fetchWishList = useCallback(() => {
+    fetch(WISH_URL, {
+      method: "PATCH",
+      headers: {
+        Authorization: localStorage.getItem("flix_token") ?? WISH_TOKEN,
+      },
+      body: JSON.stringify({
+        content_id: detailData.id,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        const wishListResult = res.Result.like;
+        setIsWishAdd(wishListResult);
+      });
+  }, [detailData]);
+
+  useEffect(() => {
+    setIsWishAdd(detailData.wishlist);
+  }, [detailData.wishlist]);
+
+  useEffect(() => {
+    fetchWishList();
+  }, [fetchWishList]);
+
   return (
     <ModalPortal>
       <Background>
@@ -33,7 +59,12 @@ const Modal = ({ onClose, currentId }) => {
             <ContentVideo>
               {thumbnailVideoId && <Streaming streamId={thumbnailVideoId} />}
             </ContentVideo>
-            <Title>{movieTitle}</Title>
+            <Title>
+              <Left>{movieTitle}</Left>
+              <Right onClick={fetchWishList}>
+                <i className={`${isWishAdd ? "far" : "fas"} fa-heart`} />
+              </Right>
+            </Title>
             <ContentDetail>
               <ContentDetailLeft>
                 <H4>{movieDes}</H4>
@@ -102,10 +133,28 @@ const Text = styled.p`
 
 const Title = styled(Text)`
   font-size: 45px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Left = styled.span`
+  width: 480px;
+  color: white;
+  text-align: left;
+`;
+
+const Right = styled.span`
+  margin-right: 50px;
+  color: red;
+  text-align: left;
 `;
 
 const H2 = styled(Text)`
+  margin: 10px 0;
+  color: white;
+  text-align: left;
   font-size: 30px;
+  font-weight: bold;
 `;
 
 const H4 = styled(Text)`
@@ -113,16 +162,16 @@ const H4 = styled(Text)`
   font-weight: revert;
 `;
 
-const ContentDetailLeft = styled.div`
+const ContentDetailLeft = styled(Left.withComponent("div"))`
   width: 600px;
   color: white;
   text-align: left;
   font-size: 18px;
 `;
 
-const ContentDetailRight = styled.div`
+const ContentDetailRight = styled(Right.withComponent("div"))`
+  margin-left: 50px;
   color: white;
-  text-align: left;
   font-size: 18px;
 `;
 
