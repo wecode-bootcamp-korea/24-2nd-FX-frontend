@@ -36,7 +36,7 @@ const MainVideo = () => {
         {isImgDisplay ? (
           <Streaming onMouseLeave={mainImgLeaveHandler} streamId={82} />
         ) : (
-          <MainImg src="/images/ad.webp" />
+          <MainImg src="/images/netflix.png" />
         )}
         <MainInfoLayout>
           <MainTitle isImgDisplay={isImgDisplay}>{movieList.name}</MainTitle>

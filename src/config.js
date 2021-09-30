@@ -1,11 +1,11 @@
-const MAIN_IP = "10.58.5.110";
+const MAIN_IP = "13.125.236.223";
 export const FLIX_TOKEN = localStorage.getItem("filx_token");
-export const MAIN_URL = `http://${MAIN_IP}:8000/content/list?`;
-export const DETAIL_URL = `http://${MAIN_IP}:8000/content/`;
-export const WISH_URL = `http://${MAIN_IP}:8000/wishlists`;
-export const STREAM_URL = `http://${MAIN_IP}:8000/content/streaming/`;
+export const MAIN_URL = `http://${MAIN_IP}:8080/content/list?`;
+export const DETAIL_URL = `http://${MAIN_IP}:8080/content/`;
+export const WISH_URL = `http://${MAIN_IP}:8080/wishlists`;
+export const STREAM_URL = `http://${MAIN_IP}:8080/content/streaming/`;
 
-const LOGIN_URL = "http://10.58.5.110:8000/users";
+const LOGIN_URL = "http://13.125.236.223:8080/users";
 export const FLIX_SIGNIN_URL = `${LOGIN_URL}/sign-in`;
 export const FLIX_SIGNUP_URL = `${LOGIN_URL}/sign-up`;
 export const KAKAO_URL = `${LOGIN_URL}/kakao-login`;
