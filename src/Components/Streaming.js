@@ -58,7 +58,7 @@ const Streaming = props => {
 
   return (
     <>
-      <VideoStream ref={videoRef} autoPlay muted width="100%" controls />
+      <VideoStream ref={videoRef} autoPlay muted width="100%" />
     </>
   );
 };

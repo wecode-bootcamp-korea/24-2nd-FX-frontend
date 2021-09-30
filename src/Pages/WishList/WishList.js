@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { WISH_URL } from "config.js";
+<<<<<<< HEAD
 import Carousel from "Components/Carousel";
+=======
+import WishCard from "Pages/WishList/WishCard";
+>>>>>>> ad56995 (Fix : withlist modal)
 
 const WishList = () => {
   const [wishList, setWishList] = useState({});
@@ -21,7 +25,7 @@ const WishList = () => {
 
   return (
     <Background>
-      <Carousel url={WISH_URL} wishList={wishList} />;
+      <WishCard />;
     </Background>
   );
 };
