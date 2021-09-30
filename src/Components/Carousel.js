@@ -7,7 +7,7 @@ import Modal from "./Modal/Modal";
 import { handleFetch } from "../utils/index";
 
 const Carousel = props => {
-  const { match, location } = useReactRouter();
+  const { match } = useReactRouter();
   const [curXoffset, setCurXoffset] = useState(0);
   const [cardsData, setCardsData] = useState([]);
   const firstTotalCount = 10;
@@ -69,7 +69,7 @@ const Carousel = props => {
         `${props.url}&category=${match.params.genreCategory}`,
         updateCardsData
       );
-    } else {
+    } else if (match.params.genreCategory === undefined) {
       handleFetch(`${props.url}`, updateCardsData);
     }
   }, [match.params.genreCategory]);

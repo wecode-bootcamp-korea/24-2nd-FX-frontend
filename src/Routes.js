@@ -15,15 +15,15 @@ class Routes extends React.Component {
         <Nav />
         <Switch>
           <Route exact path="/signup" component={SignUp} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/" component={Main} />
+          <Route exact path="/main" component={Main} />
+          <Route exact path="/" component={Login} />
           <Route
             exact
             path="/genre/:genreCategory"
             component={props => <Genre {...props} />}
           />
           <Route exact path="/genre" component={Genre} />
-          <Route exact path="/wishlist" component={WishList} />
+          <Route exact path="/wishlists" component={WishList} />
         </Switch>
         <Footer />
       </Router>
