@@ -2,7 +2,6 @@ import React from "react";
 import Carousel from "Components/Carousel";
 import MainVideo from "Components/MainVideo";
 import SLIDE_DATA from "./slideData.js";
-import { MAIN_URL } from "config.js";
 
 const Main = () => {
   return (

@@ -3,7 +3,7 @@ import Card from "../../Components/Card";
 import Modal from "../../Components/Modal/Modal";
 import ModalPortal from "../../Components/Modal/Portal";
 import styled from "styled-components";
-import { WISH_URL, FLIX_TOKEN } from "../../config";
+import { WISH_URL } from "../../config";
 
 const WishCard = () => {
   const [wishList, setWishList] = useState([]);
@@ -44,9 +44,10 @@ const WishCard = () => {
   };
 
   const GetWishList = () => {
+    const TOKEN = localStorage.getItem("filx_token");
     fetch(WISH_URL, {
       headers: {
-        Authorization: FLIX_TOKEN,
+        Authorization: TOKEN,
       },
     })
       .then(res => res.json())
@@ -68,6 +69,7 @@ const WishCard = () => {
             {wishList.map(card => {
               return (
                 <Card
+                  key={card.id}
                   id={card.id}
                   img={card.thumb_nail}
                   onClick={handleModal}

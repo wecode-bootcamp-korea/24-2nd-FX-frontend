@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import styled from "styled-components";
-import { DETAIL_URL, WISH_URL, WISH_TOKEN } from "../../config.js";
+import { DETAIL_URL, WISH_URL } from "../../config.js";
 import ModalPortal from "./Portal";
 import Series from "./Series.js";
 import Streaming from "Components/Streaming.js";
@@ -8,7 +8,9 @@ import { handleFetch } from "../../utils/index";
 
 const Modal = ({ onClose, currentId }) => {
   const [detailData, setDetailData] = useState({});
-  const [isWishAdd, setIsWishAdd] = useState(false);
+  const [isWishAdd, setIsWishAdd] = useState(true);
+  const [trigger, setTrigger] = useState(false);
+  const mounted = useRef(false);
 
   useEffect(() => {
     const updateModalVideo = data => {
@@ -25,11 +27,17 @@ const Modal = ({ onClose, currentId }) => {
   const movieDetail = detailData.detail ?? [];
   const thumbnailVideoId = detailData.detail?.[0].detail_id;
 
+  const firstFunc = () => {
+    if (!mounted.current) mounted.current = true;
+    else fetchWishList();
+  };
+
   const fetchWishList = useCallback(() => {
+    const TOKEN = localStorage.getItem("filx_token");
     fetch(WISH_URL, {
       method: "PATCH",
       headers: {
-        Authorization: localStorage.getItem("flix_token") ?? WISH_TOKEN,
+        Authorization: TOKEN,
       },
       body: JSON.stringify({
         content_id: detailData.id,
@@ -40,15 +48,9 @@ const Modal = ({ onClose, currentId }) => {
         const wishListResult = res.Result.like;
         setIsWishAdd(wishListResult);
       });
-  }, [detailData]);
+  }, [trigger]);
 
-  useEffect(() => {
-    setIsWishAdd(detailData.wishlist);
-  }, [detailData.wishlist]);
-
-  useEffect(() => {
-    fetchWishList();
-  }, [fetchWishList]);
+  useEffect(firstFunc, [trigger]);
 
   return (
     <ModalPortal>
@@ -61,8 +63,8 @@ const Modal = ({ onClose, currentId }) => {
             </ContentVideo>
             <Title>
               <Left>{movieTitle}</Left>
-              <Right onClick={fetchWishList}>
-                <i className={`${isWishAdd ? "far" : "fas"} fa-heart`} />
+              <Right onClick={() => setTrigger(!trigger)}>
+                <i className={`${trigger ? "fas" : "far"} fa-heart`} />
               </Right>
             </Title>
             <ContentDetail>

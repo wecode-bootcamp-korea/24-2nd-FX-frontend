@@ -42,7 +42,7 @@ const Login = () => {
     if (data.token) {
       localStorage.setItem("filx_token", data.token);
       alert(`Flix의 재미를 느껴보세요!`);
-      history.push("/");
+      history.push("/main");
     } else {
       alert("로그인을 다시 해주세요.");
     }
@@ -173,7 +173,7 @@ const Login = () => {
             backColor="orange"
             textColor="black"
           >
-            <i class="fab fa-google"></i>
+            <i className="fab fa-google"></i>
             <span>Google 로그인</span>
           </GoogleBtn>
           <p>

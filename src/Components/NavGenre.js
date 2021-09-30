@@ -17,7 +17,7 @@ const NavGenre = () => {
         </LogoLink>
       </Logo>
       <GenreList>
-        <Listcusor onClick={() => changePage("/")}>홈</Listcusor>
+        <Listcusor onClick={() => changePage("/main")}>홈</Listcusor>
       </GenreList>
       <GenreList>
         <Listcusor onClick={() => changePage("/genre/drama")}>
@@ -28,7 +28,9 @@ const NavGenre = () => {
         <Listcusor onClick={() => changePage("/genre/movie")}>영화</Listcusor>
       </GenreList>
       <GenreList>
-        <Listcusor onClick={() => changePage("/")}>내가 찜한 콘텐츠</Listcusor>
+        <Listcusor onClick={() => changePage("/wishlists")}>
+          내가 찜한 콘텐츠
+        </Listcusor>
       </GenreList>
     </List>
   );
