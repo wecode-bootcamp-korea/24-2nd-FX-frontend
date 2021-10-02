@@ -52,19 +52,19 @@ MAU를 고려해 기존 페이스북만 제공되던 소셜로그인을 카카�
     </tr>
     <tr>
       <td>
-        - 데이터 값에 따라 이동거리가 달라지는 Carousel Slide 구현
-        - Portal을 통한 Modal 구현
+        - 데이터 값에 따라 이동거리가 달라지는 Carousel Slide 구현<br>
+        - Portal을 통한 Modal 구현<br>
         - 페이지, Carousel, Modal component 간 라우팅 연결
       </td>
       <td>
         - scroll에 따라 스타일링이 변화하는 nav bar, footer 구현<br>
-        - 메인페이지 및 modal창 내 비디오 스트리밍 구현
+        - 메인페이지 및 modal창 내 비디오 스트리밍 구현<br>
         - 페이지, Carousel, Modal component 간 라우팅 연결
       </td>
       <td>
         - 유효성 검사를 포함한 회원가입 기능 구현<br>
-        - 유효성 검사 및 token을 부여하는 로그인 기능 구현
-        - kakao, google 소셜 로그인 기능 구현
+        - 유효성 검사 및 token을 부여하는 로그인 기능 구현<br>
+        - kakao, google 소셜 로그인 기능 구현<br>
         - modal 내의 하트 아이콘 클릭을 통한 '찜하기' 기능 및 찜하기 리스트 기능 구현
       </td>
     </tr>
@@ -78,12 +78,13 @@ MAU를 고려해 기존 페이스북만 제공되던 소셜로그인을 카카�
     </tr>
     <tr>
       <td>
-        - StreamingHttpResponse 와 S3를 이용한 스트리밍 서비스
-        - jwt토큰과 이를통한 얻어진 권한을 활용한 찜하기 기능 구현
+        - StreamingHttpResponse 와 S3를 이용한 스트리밍 서비스<br>
+        - jwt토큰과 이를통한 얻어진 권한을 활용한 찜하기 기능 구현<br>
         - Docker, EC2, RDS, S3를 활용한 배포
       </td>
       <td>
-        - 추가예정~
+        - Flix 서비스 회원가입, 로그인 API 구현<br>
+        - 카카오, 구글 로그인 API 구현
       </td>
     </tr>       
   </table>
